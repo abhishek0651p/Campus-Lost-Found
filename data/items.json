@@ -1,0 +1,263 @@
+{
+  "lost_items": [
+    {
+      "id": "L001",
+      "title": "Blue JanSport Backpack",
+      "category": "Bags & Backpacks",
+      "description": "Navy blue JanSport backpack with a small tear on the front pocket. Contains a laptop charger and a notebook with physics notes.",
+      "location": "Central Library - 2nd Floor",
+      "date": "2026-08-23",
+      "time": "14:30",
+      "reporter": "Arjun Mehta",
+      "email": "arjun.mehta@campus.edu",
+      "status": "open",
+      "color": "Blue",
+      "brand": "JanSport",
+      "tags": [
+        "backpack",
+        "blue",
+        "library",
+        "jansport",
+        "laptop charger"
+      ]
+    },
+    {
+      "id": "L002",
+      "title": "Silver MacBook Pro Charger",
+      "category": "Electronics",
+      "description": "Apple 67W USB-C power adapter, white cable. Left plugged in at a desk near the windows.",
+      "location": "Engineering Block - Lab 3",
+      "date": "2026-08-22",
+      "time": "16:45",
+      "reporter": "Priya Sharma",
+      "email": "priya.sharma@campus.edu",
+      "status": "open",
+      "color": "White",
+      "brand": "Apple",
+      "tags": [
+        "charger",
+        "macbook",
+        "apple",
+        "usb-c",
+        "white"
+      ]
+    },
+    {
+      "id": "L003",
+      "title": "Student ID Card",
+      "category": "ID & Cards",
+      "description": "Campus student ID card with name 'Rahul Verma', Roll No CS-2024-089. Has a red lanyard attached.",
+      "location": "Main Canteen",
+      "date": "2026-08-24",
+      "time": "12:15",
+      "reporter": "Rahul Verma",
+      "email": "rahul.verma@campus.edu",
+      "status": "open",
+      "color": "White",
+      "brand": "",
+      "tags": [
+        "id card",
+        "student id",
+        "lanyard",
+        "red",
+        "canteen"
+      ]
+    },
+    {
+      "id": "L004",
+      "title": "Black Wireless Earbuds",
+      "category": "Electronics",
+      "description": "Sony WF-1000XM5 wireless earbuds in black charging case. Left on a bench after a phone call.",
+      "location": "Sports Complex - Near Basketball Court",
+      "date": "2026-08-21",
+      "time": "18:00",
+      "reporter": "Sneha Patil",
+      "email": "sneha.patil@campus.edu",
+      "status": "open",
+      "color": "Black",
+      "brand": "Sony",
+      "tags": [
+        "earbuds",
+        "wireless",
+        "sony",
+        "black",
+        "sports"
+      ]
+    },
+    {
+      "id": "L005",
+      "title": "Prescription Glasses",
+      "category": "Accessories",
+      "description": "Round tortoiseshell frame prescription glasses in a brown leather case. Moderate prescription.",
+      "location": "Auditorium - Row 12",
+      "date": "2026-08-24",
+      "time": "10:30",
+      "reporter": "Kavya Nair",
+      "email": "kavya.nair@campus.edu",
+      "status": "open",
+      "color": "Brown",
+      "brand": "Ray-Ban",
+      "tags": [
+        "glasses",
+        "prescription",
+        "brown",
+        "tortoiseshell",
+        "case"
+      ]
+    },
+    {
+      "id": "L006",
+      "title": "Texas Instruments Calculator",
+      "category": "Stationery & Books",
+      "description": "TI-84 Plus CE graphing calculator with name written on back in marker. Has a blue protective cover.",
+      "location": "Mathematics Block - Room 204",
+      "date": "2026-08-25",
+      "time": "09:15",
+      "reporter": "Amit Kumar",
+      "email": "amit.kumar@campus.edu",
+      "status": "open",
+      "color": "Black",
+      "brand": "Texas Instruments",
+      "tags": [
+        "calculator",
+        "ti-84",
+        "graphing",
+        "mathematics",
+        "blue cover"
+      ]
+    }
+  ],
+  "found_items": [
+    {
+      "id": "F001",
+      "title": "Dark Blue Backpack",
+      "category": "Bags & Backpacks",
+      "description": "Found a dark blue backpack near the reading area. Has a ripped front pocket. Contains some cables and a spiral notebook.",
+      "location": "Central Library - 1st Floor Entrance",
+      "date": "2026-08-23",
+      "time": "17:00",
+      "reporter": "Deepak Joshi",
+      "email": "deepak.joshi@campus.edu",
+      "status": "open",
+      "color": "Blue",
+      "brand": "",
+      "tags": [
+        "backpack",
+        "blue",
+        "library",
+        "cables",
+        "notebook",
+        "ripped"
+      ]
+    },
+    {
+      "id": "F002",
+      "title": "White USB-C Laptop Charger",
+      "category": "Electronics",
+      "description": "Found a white laptop charger plugged into a socket in the lab. Looks like an Apple charger.",
+      "location": "Engineering Block - Lab 3",
+      "date": "2026-08-23",
+      "time": "08:30",
+      "reporter": "Meera Reddy",
+      "email": "meera.reddy@campus.edu",
+      "status": "open",
+      "color": "White",
+      "brand": "Apple",
+      "tags": [
+        "charger",
+        "laptop",
+        "apple",
+        "white",
+        "usb-c",
+        "lab"
+      ]
+    },
+    {
+      "id": "F003",
+      "title": "Campus ID Card - Rahul",
+      "category": "ID & Cards",
+      "description": "Found a student ID card on a table in the canteen. Name on card is Rahul, CS department. Has a red lanyard.",
+      "location": "Main Canteen - Table 5",
+      "date": "2026-08-24",
+      "time": "13:00",
+      "reporter": "Ananya Singh",
+      "email": "ananya.singh@campus.edu",
+      "status": "open",
+      "color": "White",
+      "brand": "",
+      "tags": [
+        "id card",
+        "student",
+        "rahul",
+        "cs",
+        "red lanyard",
+        "canteen"
+      ]
+    },
+    {
+      "id": "F004",
+      "title": "Black Earbuds Case",
+      "category": "Electronics",
+      "description": "Small black earbuds charging case found on a bench. Brand appears to be Sony. No earbuds inside, just the case.",
+      "location": "Sports Complex - Main Entrance",
+      "date": "2026-08-22",
+      "time": "07:45",
+      "reporter": "Rohan Gupta",
+      "email": "rohan.gupta@campus.edu",
+      "status": "open",
+      "color": "Black",
+      "brand": "Sony",
+      "tags": [
+        "earbuds",
+        "case",
+        "sony",
+        "black",
+        "sports",
+        "bench"
+      ]
+    },
+    {
+      "id": "F005",
+      "title": "Water Bottle - Blue Hydro Flask",
+      "category": "Accessories",
+      "description": "Blue Hydro Flask water bottle found in lecture hall. Has stickers on it - one says 'Code is Poetry'.",
+      "location": "CS Block - Lecture Hall 1",
+      "date": "2026-08-25",
+      "time": "11:00",
+      "reporter": "Tanvi Desai",
+      "email": "tanvi.desai@campus.edu",
+      "status": "open",
+      "color": "Blue",
+      "brand": "Hydro Flask",
+      "tags": [
+        "water bottle",
+        "blue",
+        "hydro flask",
+        "stickers",
+        "lecture hall"
+      ]
+    },
+    {
+      "id": "F006",
+      "title": "test backpacks",
+      "category": "Bags & Backpacks",
+      "description": "njnjennene",
+      "location": "library",
+      "date": "2026-08-28",
+      "time": "10:39",
+      "reporter": "test user",
+      "email": "abhishek0651p@gmail.com",
+      "status": "open",
+      "color": "blue",
+      "brand": "test",
+      "tags": [
+        "test",
+        "backpack"
+      ],
+      "block": "N",
+      "building": "N Building — New Building",
+      "floor": "2nd Floor",
+      "room": "S205A"
+    }
+  ]
+}

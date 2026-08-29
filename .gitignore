@@ -1,0 +1,26 @@
+# Build artifacts
+
+*.exe
+backend/*.exe
+
+# Backup files
+
+*.bak
+*.testbak
+
+# Runtime data
+
+data/matches.json
+
+# Debug/temp files
+
+debug_*.png
+extracted_message.txt
+server.log
+
+# IDE/OS
+
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

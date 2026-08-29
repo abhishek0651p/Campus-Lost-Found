@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Campus Lost &amp; Found — Report lost or found items on campus with a C++ smart matching engine that uses 7 weighted criteria to reunite owners with their belongings.">
+  <title>Campus Lost &amp; Found — Smart Matching System</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Leaflet CSS & JS via CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Lucide icons via CDN (lightweight SVG icon library) -->
+  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.js"></script>
+
+  <!-- Google Fonts for Editorial typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+<body>
+
+<!-- ======================================================================= -->
+<!-- LANDING PAGE                                                             -->
+<!-- ======================================================================= -->
+<div id="landingPage" class="landing">
+  <!-- ================================================================= -->
+  <!-- LOADING SCREEN                                                     -->
+  <!-- ================================================================= -->
+  <div id="cinematicLoader" class="cinematic-loader">
+    <div class="loader-top-left">CAMPUS L&amp;F</div>
+    <div class="loader-center">
+      <div class="loader-word-wrap">
+        <span class="loader-word">REPORT</span>
+        <span class="loader-word">DISCOVER</span>
+        <span class="loader-word">RECOVER</span>
+      </div>
+    </div>
+    <div class="loader-bottom-right"><span id="loaderCounter">000</span></div>
+    <div class="loader-progress-bar">
+      <div class="loader-progress-fill" id="loaderFill"></div>
+    </div>
+  </div>
+
+
+  <!-- Landing Navbar -->
+  <nav class="landing-nav floating-nav" id="landingNav">
+    <div class="landing-nav__brand">
+      <div class="landing-nav__logo">🔍</div>
+      Campus L&amp;F
+    </div>
+    <div class="landing-nav__links">
+      <a href="#how-it-works" class="landing-nav__link">How It Works</a>
+      <a href="#matching-engine" class="landing-nav__link">Matching Engine</a>
+      <a href="#examples" class="landing-nav__link">Examples</a>
+      <button class="landing-nav__cta" id="navDashboardBtn">Open Dashboard</button>
+    </div>
+  </nav>
+
+  <!-- ================================================================= -->
+  <!-- SECTION 1: Hero                                                    -->
+  <!-- ================================================================= -->
+  <section class="landing-section hero-section" id="hero">
+    <div class="hero-float-cards">
+      <div class="float-card float-card--1">
+        <span class="float-card__dot float-card__dot--lost"></span>
+        Blue JanSport Backpack — Library
+      </div>
+      <div class="float-card float-card--2">
+        <span class="float-card__dot float-card__dot--found"></span>
+        White USB-C Charger — Lab 3
+      </div>
+      <div class="float-card float-card--3">
+        <span class="float-card__dot float-card__dot--found"></span>
+        Campus ID Card — Canteen
+      </div>
+      <div class="float-card float-card--4">
+        <span class="float-card__dot float-card__dot--lost"></span>
+        Black Wireless Earbuds — Sports
+      </div>
+      <div class="float-card float-card--5">
+        <span class="float-card__dot float-card__dot--found"></span>
+        Blue Hydro Flask — CS Block
+      </div>
+    </div>
+
+    <div class="landing-section__inner">
+      <div class="hero-content">
+        <div class="hero-badge cinematic-hero-badge">🎓 Campus Technology Project</div>
+        <h1 class="hero-title cinematic-title">
+          <span class="gradient-text">CAMPUS LOST &amp; FOUND</span>
+        </h1>
+        <p class="hero-tagline">
+          Find what matters. Return what belongs.<br>
+          Smart matching powered by a C++ engine with 7 weighted criteria.
+        </p>
+        <div class="hero-ctas">
+          <a href="#how-it-works" class="btn-landing btn-landing--primary">
+            Explore Campus L&amp;F ↓
+          </a>
+          <button class="btn-landing btn-landing--secondary" id="heroReportBtn">
+            Report an Item
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll-hint">
+      <div class="hero-scroll-hint__arrow"></div>
+      Scroll to explore
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- SECTION 2: How It Works                                            -->
+  <!-- ================================================================= -->
+  <section class="landing-section how-section pin-section" id="how-it-works">
+    <div class="landing-section__inner">
+      <div class="reveal" style="text-align:center;">
+        <div class="section-label">⚙️ Process</div>
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle" style="margin: 0 auto;">
+          From reporting to recovery — a streamlined four-step process.
+        </p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card reveal reveal-delay-1">
+          <div class="step-card__number">01</div>
+          <div class="step-card__icon">📝</div>
+          <div class="step-card__title">Report</div>
+          <div class="step-card__desc">Submit a detailed report of your lost or found item with location, category, and description.</div>
+        </div>
+        <div class="step-card reveal reveal-delay-2">
+          <div class="step-card__number">02</div>
+          <div class="step-card__icon">🔬</div>
+          <div class="step-card__title">Analyze</div>
+          <div class="step-card__desc">Our C++ engine parses every report and extracts key attributes for comparison.</div>
+        </div>
+        <div class="step-card reveal reveal-delay-3">
+          <div class="step-card__number">03</div>
+          <div class="step-card__icon">🔗</div>
+          <div class="step-card__title">Match</div>
+          <div class="step-card__desc">The weighted algorithm scores every lost-found pair across 7 criteria and ranks potential matches.</div>
+        </div>
+        <div class="step-card reveal reveal-delay-4">
+          <div class="step-card__number">04</div>
+          <div class="step-card__icon">✅</div>
+          <div class="step-card__title">Recover</div>
+          <div class="step-card__desc">High-confidence matches are surfaced so owners can confirm and retrieve their belongings.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- SECTION 3: Smart Matching Engine                                   -->
+  <!-- ================================================================= -->
+  <section class="landing-section matching-section pin-section" id="matching-engine">
+    <div class="landing-section__inner">
+      <div class="reveal" style="text-align:center;">
+        <div class="section-label">🔬 Technology</div>
+        <h2 class="section-title">C++ Smart Matching Engine</h2>
+        <p class="section-subtitle" style="margin: 0 auto;">
+          Every lost item is compared against every found item using a 7-criteria weighted scoring algorithm compiled from C++17.
+        </p>
+      </div>
+
+      <div class="matching-demo">
+        <!-- Lost ↔ Found visual -->
+        <div class="matching-visual reveal">
+          <div class="matching-item-card matching-item-card--lost">
+            <div class="matching-item-card__label matching-item-card__label--lost">🔴 Lost Item</div>
+            <div class="matching-item-card__title">Silver MacBook Pro Charger</div>
+            <div class="matching-item-card__meta">
+              <span>📍 Engineering Block - Lab 3</span>
+              <span>📅 Aug 22, 2026</span>
+              <span>🏷️ Apple • White</span>
+            </div>
+          </div>
+
+          <div class="matching-connector">
+            <div class="matching-connector__line"></div>
+            <div class="matching-connector__icon">⇄</div>
+            <div class="matching-connector__line"></div>
+          </div>
+
+          <div class="matching-item-card matching-item-card--found">
+            <div class="matching-item-card__label matching-item-card__label--found">🟢 Found Item</div>
+            <div class="matching-item-card__title">White USB-C Laptop Charger</div>
+            <div class="matching-item-card__meta">
+              <span>📍 Engineering Block - Lab 3</span>
+              <span>📅 Aug 23, 2026</span>
+              <span>🏷️ Apple • White</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7 Criteria -->
+        <div class="criteria-grid">
+          <div class="criteria-item reveal reveal-delay-1">
+            <div class="criteria-item__icon">📂</div>
+            <div class="criteria-item__info">
+              <span class="criteria-item__name">Category</span>
+              <span class="criteria-item__weight">25% weight</span>
+            </div>
+          </div>
+          <div class="criteria-item reveal reveal-delay-2">
+            <div class="criteria-item__icon">🎨</div>
+            <div class="criteria-item__info">
+              <span class="criteria-item__name">Color</span>
+              <span class="criteria-item__weight">10% weight</span>
+            </div>
+          </div>
+          <div class="criteria-item reveal reveal-delay-3">
+            <div class="criteria-item__icon">🏷️</div>
+            <div class="criteria-item__info">
+              <span class="criteria-item__name">Brand</span>
+              <span class="criteria-item__weight">10% weight</span>
+            </div>
+          </div>
+          <div class="criteria-item reveal reveal-delay-4">
+            <div class="criteria-item__icon">📍</div>
+            <div class="criteria-item__info">
+              <span class="criteria-item__name">Location</span>
+              <span class="criteria-item__weight">20% weight</span>
+            </div>
+          </div>
+          <div class="criteria-item reveal reveal-delay-5">
+            <div class="criteria-item__icon">📅</div>
+            <div class="criteria-item__info">
+              <span class="criteria-item__name">Date</span>
+              <span class="criteria-item__weight">10% weight</span>
+            </div>
+          </div>
+          <div class="criteria-item reveal reveal-delay-6">
+            <div class="criteria-item__icon">📝</div>
+            <div class="criteria-item__info">
+              <span class="criteria-item__name">Description</span>
+              <span class="criteria-item__weight">15% weight</span>
+            </div>
+          </div>
+          <div class="criteria-item reveal reveal-delay-7">
+            <div class="criteria-item__icon">🔖</div>
+            <div class="criteria-item__info">
+              <span class="criteria-item__name">Tags</span>
+              <span class="criteria-item__weight">10% weight</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Score display -->
+        <div class="score-display reveal">
+          <div class="score-ring-large" id="landingScoreRing">
+            <svg viewBox="0 0 160 160">
+              <circle class="ring-track" cx="80" cy="80" r="70"/>
+              <circle class="ring-fill" cx="80" cy="80" r="70"
+                stroke-dasharray="440"
+                stroke-dashoffset="440"
+                id="landingScoreFill"/>
+            </svg>
+            <div class="score-ring-large__value">
+              <div class="score-ring-large__number" id="landingScoreNumber">0%</div>
+              <div class="score-ring-large__label">Match Score</div>
+            </div>
+          </div>
+          <div class="score-engine-label">⚙️ C++ Smart Matching Engine</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- SECTION 4: Campus Examples                                         -->
+  <!-- ================================================================= -->
+  <section class="landing-section examples-section" id="examples">
+    <div class="landing-section__inner">
+      <div class="reveal" style="text-align:center;">
+        <div class="section-label">📋 Real Data</div>
+        <h2 class="section-title">Campus Match Examples</h2>
+        <p class="section-subtitle" style="margin: 0 auto;">
+          Real matching results from our campus data — computed by the C++ engine.
+        </p>
+      </div>
+
+      <div class="examples-grid">
+        <div class="example-card reveal reveal-delay-1">
+          <div class="example-card__pair">
+            <div class="example-card__side">
+              <div class="example-card__side-label example-card__side-label--lost">Lost</div>
+              <div class="example-card__side-title">Silver MacBook Pro Charger</div>
+              <div class="example-card__side-location">📍 Engineering Block - Lab 3</div>
+            </div>
+            <div class="example-card__side">
+              <div class="example-card__side-label example-card__side-label--found">Found</div>
+              <div class="example-card__side-title">White USB-C Laptop Charger</div>
+              <div class="example-card__side-location">📍 Engineering Block - Lab 3</div>
+            </div>
+          </div>
+          <div class="example-card__score">
+            <span class="example-card__score-label">Match Score</span>
+            <span class="example-card__score-value">86%</span>
+          </div>
+        </div>
+
+        <div class="example-card reveal reveal-delay-2">
+          <div class="example-card__pair">
+            <div class="example-card__side">
+              <div class="example-card__side-label example-card__side-label--lost">Lost</div>
+              <div class="example-card__side-title">Black Wireless Earbuds</div>
+              <div class="example-card__side-location">📍 Sports Complex - Basketball</div>
+            </div>
+            <div class="example-card__side">
+              <div class="example-card__side-label example-card__side-label--found">Found</div>
+              <div class="example-card__side-title">Black Earbuds Case</div>
+              <div class="example-card__side-location">📍 Sports Complex - Entrance</div>
+            </div>
+          </div>
+          <div class="example-card__score">
+            <span class="example-card__score-label">Match Score</span>
+            <span class="example-card__score-value">84%</span>
+          </div>
+        </div>
+
+        <div class="example-card reveal reveal-delay-3">
+          <div class="example-card__pair">
+            <div class="example-card__side">
+              <div class="example-card__side-label example-card__side-label--lost">Lost</div>
+              <div class="example-card__side-title">Blue JanSport Backpack</div>
+              <div class="example-card__side-location">📍 Central Library - 2nd Floor</div>
+            </div>
+            <div class="example-card__side">
+              <div class="example-card__side-label example-card__side-label--found">Found</div>
+              <div class="example-card__side-title">Dark Blue Backpack</div>
+              <div class="example-card__side-location">📍 Central Library - 1st Floor</div>
+            </div>
+          </div>
+          <div class="example-card__score">
+            <span class="example-card__score-label">Match Score</span>
+            <span class="example-card__score-value">73%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- SECTION 5: Stats + CTA                                             -->
+  <!-- ================================================================= -->
+  <section class="landing-section cta-section" id="stats-cta">
+    <div class="landing-section__inner">
+      <div class="reveal" style="text-align:center;">
+        <div class="section-label">📊 Platform Statistics</div>
+        <h2 class="section-title">Campus Impact</h2>
+        <p class="section-subtitle" style="margin: 0 auto;">
+          Real-time statistics from our campus lost &amp; found system.
+        </p>
+      </div>
+
+      <div class="stats-landing-grid">
+        <div class="stat-landing-card reveal reveal-delay-1">
+          <div class="stat-landing-card__icon">🔴</div>
+          <div class="stat-landing-card__value" id="landingStatLost">0</div>
+          <div class="stat-landing-card__label">Lost Reports</div>
+        </div>
+        <div class="stat-landing-card reveal reveal-delay-2">
+          <div class="stat-landing-card__icon">🟢</div>
+          <div class="stat-landing-card__value" id="landingStatFound">0</div>
+          <div class="stat-landing-card__label">Found Reports</div>
+        </div>
+        <div class="stat-landing-card reveal reveal-delay-3">
+          <div class="stat-landing-card__icon">✨</div>
+          <div class="stat-landing-card__value" id="landingStatMatches">0</div>
+          <div class="stat-landing-card__label">Smart Matches</div>
+        </div>
+        <div class="stat-landing-card reveal reveal-delay-4">
+          <div class="stat-landing-card__icon">📈</div>
+          <div class="stat-landing-card__value" id="landingStatRate">0%</div>
+          <div class="stat-landing-card__label">Recovery Rate</div>
+        </div>
+      </div>
+
+      <div class="cta-final reveal">
+        <p class="cta-final__text">Ready to explore the dashboard?</p>
+        <button class="btn-landing btn-landing--primary" id="ctaDashboardBtn">
+          Open Dashboard →
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Landing Footer -->
+  <footer class="landing-footer">
+    Campus Lost &amp; Found — Smart Matching System · College Project · Built with HTML, CSS, JavaScript &amp; C++
+  </footer>
+
+</div><!-- /#landingPage -->
+
+
+<!-- ======================================================================= -->
+<!-- DASHBOARD WRAPPER (hidden initially, shown when user enters dashboard)  -->
+<!-- ======================================================================= -->
+<div class="dashboard-wrapper hidden" id="dashboardWrapper">
+
+<!-- ======================================================================= -->
+<!-- SIDEBAR                                                                 -->
+<!-- ======================================================================= -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar__brand">
+    <div class="sidebar__logo">🔍</div>
+    <div class="sidebar__title">
+      Campus L&amp;F
+      <span>Smart Matching System</span>
+    </div>
+  </div>
+
+  <nav class="sidebar__nav">
+    <div class="sidebar__section-label">Main</div>
+    <a href="#" class="sidebar__link active" data-section="dashboard">
+      <span class="sidebar__link-icon"><i data-lucide="layout-dashboard"></i></span>
+      Dashboard
+    </a>
+    <a href="#" class="sidebar__link" data-section="lost">
+      <span class="sidebar__link-icon"><i data-lucide="search-x"></i></span>
+      Lost Items
+      <span class="sidebar__link-badge sidebar__link-badge--danger" id="lostCount">—</span>
+    </a>
+    <a href="#" class="sidebar__link" data-section="found">
+      <span class="sidebar__link-icon"><i data-lucide="package-check"></i></span>
+      Found Items
+      <span class="sidebar__link-badge sidebar__link-badge--success" id="foundCount">—</span>
+    </a>
+    <a href="#" class="sidebar__link" data-section="matches">
+      <span class="sidebar__link-icon"><i data-lucide="sparkles"></i></span>
+      Smart Matches
+      <span class="sidebar__link-badge" id="matchCount">—</span>
+    </a>
+
+    <div class="sidebar__section-label">Reports</div>
+    <a href="#" class="sidebar__link" data-section="all-reports">
+      <span class="sidebar__link-icon"><i data-lucide="clipboard-list"></i></span>
+      All Reports
+    </a>
+    <a href="#" class="sidebar__link" data-section="activity">
+      <span class="sidebar__link-icon"><i data-lucide="activity"></i></span>
+      Recent Activity
+    </a>
+
+    <div class="sidebar__section-label">System</div>
+    <a href="#" class="sidebar__link" id="runMatcherLink">
+      <span class="sidebar__link-icon"><i data-lucide="cpu"></i></span>
+      <span class="sidebar__link-text">Run Matcher (C++)</span>
+    </a>
+
+    <a href="#" class="sidebar__link" data-section="about">
+      <span class="sidebar__link-icon"><i data-lucide="info"></i></span>
+      About
+    </a>
+    <a href="#" class="sidebar__link" id="backToLandingLink">
+      <span class="sidebar__link-icon"><i data-lucide="arrow-left"></i></span>
+      Back to Landing
+    </a>
+  </nav>
+
+  <div class="sidebar__footer">
+    <div class="sidebar__user">
+      <div class="sidebar__avatar">AY</div>
+      <div class="sidebar__user-info">
+        <div class="sidebar__user-name">Abhishek Y S</div>
+        <div class="sidebar__user-role">Student • CS Dept</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ======================================================================= -->
+<!-- MAIN CONTENT                                                            -->
+<!-- ======================================================================= -->
+<div class="app-layout">
+  <main class="main-content">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <button class="topbar__hamburger" id="hamburgerBtn" aria-label="Toggle sidebar">
+        <i data-lucide="menu"></i>
+      </button>
+
+      <div class="topbar__search">
+        <span class="topbar__search-icon"><i data-lucide="search"></i></span>
+        <input type="text" class="topbar__search-input" id="globalSearch"
+               placeholder="Search items, locations, people…">
+      </div>
+
+      <div class="topbar__actions">
+        <button class="topbar__btn" id="notificationsBtn" aria-label="Notifications">
+          <i data-lucide="bell"></i>
+          <span class="badge-dot" id="notificationsBadge"></span>
+        </button>
+        <div class="topbar-dropdown" id="notificationsDropdown">
+          <div class="topbar-dropdown__header">Recent Activity</div>
+          <div class="topbar-dropdown__body" id="notificationsDropdownBody">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <button class="topbar__btn" id="settingsBtn" aria-label="Settings">
+          <i data-lucide="settings"></i>
+        </button>
+        <div class="topbar-dropdown" id="settingsDropdown">
+          <div class="topbar-dropdown__header">Settings</div>
+          <div class="topbar-dropdown__body">
+            <div class="settings-row">
+              <span class="settings-row__label">Light theme</span>
+              <label class="theme-switch">
+                <input type="checkbox" id="themeToggle">
+                <span class="theme-switch__track"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button class="topbar__report-btn" id="reportItemBtn">
+          <i data-lucide="plus"></i>
+          <span>Report Item</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content Container -->
+    <div class="page-content">
+
+      <!-- ================================================================= -->
+      <!-- SECTION: Dashboard                                                -->
+      <!-- ================================================================= -->
+      <div class="section-view active" id="section-dashboard">
+
+        <div class="page-header">
+          <h1 class="page-header__title">Dashboard</h1>
+          <p class="page-header__subtitle">Overview of campus lost &amp; found activity</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card stat-card--lost">
+            <div class="stat-card__header">
+              <div class="stat-card__icon"><i data-lucide="search-x"></i></div>
+              <span class="stat-card__trend stat-card__trend--up">+2 today</span>
+            </div>
+            <div class="stat-card__value" id="statLost">6</div>
+            <div class="stat-card__label">Active Lost Reports</div>
+          </div>
+
+          <div class="stat-card stat-card--found">
+            <div class="stat-card__header">
+              <div class="stat-card__icon"><i data-lucide="package-check"></i></div>
+              <span class="stat-card__trend stat-card__trend--up">+1 today</span>
+            </div>
+            <div class="stat-card__value" id="statFound">5</div>
+            <div class="stat-card__label">Active Found Reports</div>
+          </div>
+
+          <div class="stat-card stat-card--matches">
+            <div class="stat-card__header">
+              <div class="stat-card__icon"><i data-lucide="sparkles"></i></div>
+              <span class="stat-card__trend stat-card__trend--up">+1 new</span>
+            </div>
+            <div class="stat-card__value" id="statMatches">4</div>
+            <div class="stat-card__label">Smart Matches Found</div>
+          </div>
+
+          <div class="stat-card stat-card--rate">
+            <div class="stat-card__header">
+              <div class="stat-card__icon"><i data-lucide="trending-up"></i></div>
+              <span class="stat-card__trend stat-card__trend--up">↑ 12%</span>
+            </div>
+            <div class="stat-card__value" id="statRate">67%</div>
+            <div class="stat-card__label">Recovery Rate</div>
+          </div>
+        </div>
+
+        <!-- Two-column content grid -->
+        <div class="content-grid">
+
+          <!-- Recent Lost Items -->
+          <div class="panel">
+            <div class="panel__header">
+              <h2 class="panel__title">
+                <span class="panel__title-icon">🔴</span>
+                Recent Lost Items
+                <span class="panel__count" id="recentLostCount">6</span>
+              </h2>
+              <div class="panel__actions">
+                <button class="panel__action-btn" data-navigate="lost">View All</button>
+              </div>
+            </div>
+            <div class="panel__body" id="recentLostList">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Recent Found Items -->
+          <div class="panel">
+            <div class="panel__header">
+              <h2 class="panel__title">
+                <span class="panel__title-icon">🟢</span>
+                Recent Found Items
+                <span class="panel__count" id="recentFoundCount">5</span>
+              </h2>
+              <div class="panel__actions">
+                <button class="panel__action-btn" data-navigate="found">View All</button>
+              </div>
+            </div>
+            <div class="panel__body" id="recentFoundList">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Smart Matches Preview -->
+        <div class="panel" style="margin-bottom: 28px;">
+          <div class="panel__header">
+            <h2 class="panel__title">
+              <span class="panel__title-icon">✨</span>
+              Top Smart Matches
+              <span class="panel__count" id="topMatchCount">4</span>
+            </h2>
+            <div class="panel__actions">
+              <button class="panel__action-btn" data-navigate="matches">View All Matches</button>
+            </div>
+          </div>
+          <div class="panel__body" id="topMatchesList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="panel">
+          <div class="panel__header">
+            <h2 class="panel__title">
+              <span class="panel__title-icon">📋</span>
+              Recent Activity
+            </h2>
+          </div>
+          <div class="panel__body" id="recentActivityList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- SECTION: Lost Items                                               -->
+      <!-- ================================================================= -->
+      <div class="section-view" id="section-lost">
+        <div class="page-header">
+          <h1 class="page-header__title">Lost Items</h1>
+          <p class="page-header__subtitle">All items reported as lost on campus</p>
+        </div>
+
+        <div class="filter-bar" id="lostFilterBar">
+          <button class="filter-bar__chip active" data-filter="all">All</button>
+          <button class="filter-bar__chip" data-filter="Electronics">⚡ Electronics</button>
+          <button class="filter-bar__chip" data-filter="Bags & Backpacks">🎒 Bags</button>
+          <button class="filter-bar__chip" data-filter="ID & Cards">🪪 ID & Cards</button>
+          <button class="filter-bar__chip" data-filter="Accessories">👓 Accessories</button>
+          <button class="filter-bar__chip" data-filter="Stationery & Books">📐 Stationery</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel__body" id="allLostList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- SECTION: Found Items                                              -->
+      <!-- ================================================================= -->
+      <div class="section-view" id="section-found">
+        <div class="page-header">
+          <h1 class="page-header__title">Found Items</h1>
+          <p class="page-header__subtitle">All items reported as found on campus</p>
+        </div>
+
+        <div class="filter-bar" id="foundFilterBar">
+          <button class="filter-bar__chip active" data-filter="all">All</button>
+          <button class="filter-bar__chip" data-filter="Electronics">⚡ Electronics</button>
+          <button class="filter-bar__chip" data-filter="Bags & Backpacks">🎒 Bags</button>
+          <button class="filter-bar__chip" data-filter="ID & Cards">🪪 ID & Cards</button>
+          <button class="filter-bar__chip" data-filter="Accessories">👓 Accessories</button>
+          <button class="filter-bar__chip" data-filter="Stationery & Books">📐 Stationery</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel__body" id="allFoundList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- SECTION: Smart Matches                                            -->
+      <!-- ================================================================= -->
+      <div class="section-view" id="section-matches">
+        <div class="page-header">
+          <h1 class="page-header__title">Smart Matches</h1>
+          <p class="page-header__subtitle">C++ Smart Matching Engine — matching lost and found reports using 7 weighted criteria</p>
+        </div>
+
+        <div class="filter-bar" id="matchFilterBar">
+          <button class="filter-bar__chip active" data-filter="all">All</button>
+          <button class="filter-bar__chip" data-filter="high">🔥 High Score (90+)</button>
+          <button class="filter-bar__chip" data-filter="medium">⚡ Medium (70-89)</button>
+          <button class="filter-bar__chip" data-filter="low">💡 Low (&lt;70)</button>
+        </div>
+
+        <div id="allMatchesList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- SECTION: All Reports                                              -->
+      <!-- ================================================================= -->
+      <div class="section-view" id="section-all-reports">
+        <div class="page-header">
+          <h1 class="page-header__title">All Reports</h1>
+          <p class="page-header__subtitle">Complete listing of all lost and found reports</p>
+        </div>
+
+        <div class="filter-bar" id="allReportsFilterBar">
+          <button class="filter-bar__chip active" data-filter="all">All</button>
+          <button class="filter-bar__chip" data-filter="lost">🔴 Lost</button>
+          <button class="filter-bar__chip" data-filter="found">🟢 Found</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel__body" id="allReportsList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- SECTION: Recent Activity                                          -->
+      <!-- ================================================================= -->
+      <div class="section-view" id="section-activity">
+        <div class="page-header">
+          <h1 class="page-header__title">Recent Activity</h1>
+          <p class="page-header__subtitle">Chronological log of all campus lost &amp; found activity</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel__body" id="fullActivityList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- SECTION: About                                                    -->
+      <!-- ================================================================= -->
+      <div class="section-view" id="section-about">
+        <div class="page-header">
+          <h1 class="page-header__title">About This Project</h1>
+          <p class="page-header__subtitle">Campus Lost &amp; Found with Smart Matching System</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel__body">
+            <div style="max-width: 640px;">
+              <h3 style="margin-bottom: 12px; font-size: 1.1rem;">🎓 College Project</h3>
+              <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.7; margin-bottom: 20px;">
+                This is a campus-wide system that helps students report items they have lost or found.
+                The system uses a <strong>C++ smart matching engine</strong> that compares reports across
+                multiple dimensions — category, color, brand, location, date, description keywords, and tags —
+                to identify possible matches and help reunite owners with their belongings.
+              </p>
+              <h3 style="margin-bottom: 12px; font-size: 1.1rem;">🛠 Technology Stack</h3>
+              <ul style="color: var(--text-secondary); font-size: 0.85rem; line-height: 2; padding-left: 20px; list-style: disc;">
+                <li><strong>Frontend:</strong> HTML5, CSS3, Vanilla JavaScript</li>
+                <li><strong>Backend / Core Engine:</strong> C++17 (matcher algorithm)</li>
+                <li><strong>Data Storage:</strong> JSON flat-file</li>
+                <li><strong>Icons:</strong> Lucide Icons</li>
+              </ul>
+              <h3 style="margin-top: 20px; margin-bottom: 12px; font-size: 1.1rem;">⚙️ How Smart Matching Works</h3>
+              <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.7;">
+                The C++ matching engine uses a weighted scoring algorithm across 7 criteria:
+                Category (25%), Location Proximity (20%), Description Keywords (15%),
+                Color (10%), Brand (10%), Date Proximity (10%), and Tag Overlap (10%).
+                Matches scoring above 30% are surfaced to users for review.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- DETAIL VIEW (shown when clicking an item)                         -->
+      <!-- ================================================================= -->
+      <div class="detail-view" id="detailView">
+        <button class="detail-back" id="detailBackBtn">
+          <i data-lucide="arrow-left"></i> Back to list
+        </button>
+        <div class="detail-card" id="detailCardContent">
+          <!-- Populated dynamically by JS -->
+        </div>
+      </div>
+
+    </div><!-- /.page-content -->
+  </main>
+</div><!-- /.app-layout -->
+
+</div><!-- /#dashboardWrapper -->
+
+<!-- ======================================================================= -->
+<!-- MODAL: Report an Item                                                   -->
+<!-- ======================================================================= -->
+<div class="modal-overlay" id="reportModal">
+  <div class="modal" role="dialog" aria-labelledby="modalTitle">
+    <div class="modal__header">
+      <h2 class="modal__title" id="modalTitle">Report an Item</h2>
+      <button class="modal__close" id="modalCloseBtn" aria-label="Close modal">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <div class="modal__body">
+      <form id="reportForm" novalidate>
+
+        <!-- Lost / Found toggle -->
+        <div class="report-type-tabs">
+          <button type="button" class="report-type-tab report-type-tab--lost active"
+                  data-type="lost" id="tabLost">🔴 I Lost Something</button>
+          <button type="button" class="report-type-tab report-type-tab--found"
+                  data-type="found" id="tabFound">🟢 I Found Something</button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-group__label" for="itemTitle">Item Title *</label>
+          <input type="text" class="form-group__input" id="itemTitle"
+                 placeholder="e.g. Blue JanSport Backpack" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-group__label" for="itemCategory">Category *</label>
+            <select class="form-group__select" id="itemCategory" required>
+              <option value="">Select category</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Bags & Backpacks">Bags & Backpacks</option>
+              <option value="ID & Cards">ID & Cards</option>
+              <option value="Accessories">Accessories</option>
+              <option value="Stationery & Books">Stationery & Books</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Keys">Keys</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-group__label" for="itemColor">Color</label>
+            <input type="text" class="form-group__input" id="itemColor"
+                   placeholder="e.g. Blue, Black, Red">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-group__label" for="itemBrand">Brand</label>
+            <input type="text" class="form-group__input" id="itemBrand"
+                   placeholder="e.g. Apple, Nike, JanSport">
+          </div>
+          <div class="form-group">
+            <label class="form-group__label" for="itemLocation">Location (Free-text) *</label>
+            <input type="text" class="form-group__input" id="itemLocation"
+                   placeholder="e.g. Central Library - 2nd Floor" required>
+          </div>
+        </div>
+
+        <div class="form-row" style="display: grid; grid-template-columns: 2fr 2fr 1fr; gap: var(--spacing-md);">
+          <div class="form-group">
+            <label class="form-group__label" for="itemBlock">Building (Optional)</label>
+            <select class="form-group__select" id="itemBlock">
+              <option value="">Select Building...</option>
+              <option value="M">M Building — Main Building</option>
+              <option value="N">N Building — New Building</option>
+              <option value="S">S Building — S Building</option>
+              <option value="A">A Building — Auditorium</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-group__label" for="itemFloor">Floor (Optional)</label>
+            <select class="form-group__select" id="itemFloor">
+              <option value="">Select Floor...</option>
+              <option value="Ground Floor">Ground Floor</option>
+              <option value="1st Floor">1st Floor</option>
+              <option value="2nd Floor">2nd Floor</option>
+              <option value="3rd Floor">3rd Floor</option>
+              <option value="4th Floor">4th Floor</option>
+              <option value="5th Floor">5th Floor</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-group__label" for="itemRoom">Room (Opt)</label>
+            <input type="text" class="form-group__input" id="itemRoom" placeholder="e.g. 205A">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-group__label" for="itemDate">Date *</label>
+            <input type="date" class="form-group__input" id="itemDate" required>
+          </div>
+          <div class="form-group">
+            <label class="form-group__label" for="itemTime">Time</label>
+            <input type="time" class="form-group__input" id="itemTime">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-group__label" for="itemDescription">Description *</label>
+          <textarea class="form-group__textarea" id="itemDescription"
+                    placeholder="Describe the item in detail — any identifying marks, contents, condition…"
+                    required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-group__label" for="reporterName">Your Name *</label>
+            <input type="text" class="form-group__input" id="reporterName"
+                   placeholder="Full name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-group__label" for="reporterEmail">Email *</label>
+            <input type="email" class="form-group__input" id="reporterEmail"
+                   placeholder="your.email@campus.edu" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-group__label" for="itemTags">Tags (comma separated)</label>
+          <input type="text" class="form-group__input" id="itemTags"
+                 placeholder="e.g. laptop, charger, black, library">
+        </div>
+
+        <div class="form-group">
+          <label class="form-group__label" for="itemImageUrl">Image URL (Optional)</label>
+          <input type="url" class="form-group__input" id="itemImageUrl"
+                 placeholder="https://example.com/item-image.jpg">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn--ghost" id="cancelReportBtn">Cancel</button>
+          <button type="submit" class="btn btn--primary" id="submitReportBtn">
+            Submit Report
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Smart Match Analysis Modal -->
+<div class="modal-overlay" id="matchAnalysisModal">
+  <div class="modal" style="max-width: 900px; padding: 0;">
+    <div class="modal__header" style="border-bottom: 1px solid var(--border-subtle); padding: 1.5rem;">
+      <h2 class="modal__title">Smart Match Analysis</h2>
+      <button class="modal__close" id="matchAnalysisCloseBtn" aria-label="Close modal">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <div class="modal__body" id="matchAnalysisBody" style="padding: 0; max-height: calc(90vh - 80px); overflow-y: auto;">
+      <!-- Content populated dynamically by script.js -->
+    </div>
+  </div>
+</div>
+
+<!-- Simulated Email Modal -->
+<div class="modal-overlay" id="emailModal">
+  <div class="modal" role="dialog" aria-labelledby="emailModalTitle" style="max-width: 600px;">
+    <div class="modal__header" style="border-bottom: 1px solid var(--border-subtle); padding: 1.5rem;">
+      <h2 class="modal__title" id="emailModalTitle" style="color: var(--clr-success); display: flex; align-items: center; gap: 8px;">
+        <i data-lucide="mail"></i> Email Notification (Simulation)
+      </h2>
+      <button class="modal__close" id="emailCloseBtn" aria-label="Close modal">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <div class="modal__body" id="emailModalBody" style="padding: 1.5rem; background: var(--bg-card);">
+      <!-- Populated dynamically by script.js -->
+    </div>
+  </div>
+</div>
+
+<!-- Map Modal -->
+<div class="modal-overlay" id="mapModal">
+  <div class="modal" role="dialog" aria-labelledby="mapModalTitle" style="max-width: 800px; padding: 0;">
+    <div class="modal__header" style="border-bottom: 1px solid var(--border-subtle); padding: 1.5rem;">
+      <h2 class="modal__title" id="mapModalTitle" style="display: flex; align-items: center; gap: 8px;">
+        <i data-lucide="map-pin"></i> Campus Map
+      </h2>
+      <button class="modal__close" id="mapCloseBtn" aria-label="Close map modal">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <div class="modal__body" style="padding: 0; position: relative;">
+      <!-- Details Panel overlaid on map -->
+      <div id="mapDetailsPanel" style="position: absolute; top: 10px; left: 10px; z-index: 1000; background: var(--bg-surface); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-shadow: 0 4px 12px rgba(0,0,0,0.5); min-width: 250px;">
+        <div style="font-weight: 600; color: var(--text-primary);" id="mapDestBuilding">S Building</div>
+        <div style="font-size: 0.875rem; color: var(--text-secondary);" id="mapDestRoom">2nd Floor • Room S205A</div>
+        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-subtle); display: none;" id="mapRouteInfo">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem;">
+            <span style="color: var(--text-secondary);">Distance:</span>
+            <span style="font-weight: 600; color: var(--text-primary);" id="mapDistance">--</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; margin-top: 4px;">
+            <span style="color: var(--text-secondary);">Est. Time:</span>
+            <span style="font-weight: 600; color: var(--clr-primary);" id="mapDuration">--</span>
+          </div>
+        </div>
+        <button class="btn btn--primary" id="startDirectionsBtn" style="width: 100%; margin-top: 12px; font-size: 0.875rem; padding: 0.5rem;">
+          <i data-lucide="navigation"></i> Start Directions
+        </button>
+      </div>
+      <!-- Leaflet Map Container -->
+      <div id="campusMap" style="height: 500px; width: 100%; background: #1a1a1a;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- App Script -->
+<script src="script.js"></script>
+</body>
+</html>
