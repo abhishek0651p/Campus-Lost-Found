@@ -16,6 +16,7 @@ Requirements:
 """
 
 import http.server
+import hmac
 import json
 import os
 import shutil
@@ -35,6 +36,13 @@ ITEMS_JSON = PROJECT_ROOT / "data" / "items.json"
 MATCHES_JSON = PROJECT_ROOT / "data" / "matches.json"
 MATCHER_EXE = PROJECT_ROOT / "backend" / "campus_matcher.exe"
 
+# Authentication: all mutating /api/* endpoints require the X-Admin-Token
+# header to match this value. The token is read from the environment so it
+# is never stored in source or committed to git. If the env var is unset,
+# the mutating routes fail-closed with HTTP 503.
+ADMIN_TOKEN = os.environ.get("CAMPUS_LF_ADMIN_TOKEN", "")
+ADMIN_TOKEN_HEADER = "X-Admin-Token"
+
 # ---------------------------------------------------------------------------
 # Request Handler
 # ---------------------------------------------------------------------------
@@ -49,6 +57,10 @@ class CampusHandler(http.server.SimpleHTTPRequestHandler):
     # ---- Routing -----------------------------------------------------------
 
     def do_POST(self):
+        # All mutating /api/* endpoints require the admin token.
+        if self.path.startswith("/api/"):
+            if not self._require_admin():
+                return
         if self.path == "/api/run-matcher":
             self._handle_run_matcher()
         elif self.path == "/api/add-item":
@@ -65,12 +77,33 @@ class CampusHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Admin-Token")
         super().end_headers()
 
     def do_OPTIONS(self):
         self.send_response(204)
         self.end_headers()
+
+    # ---- Auth helper --------------------------------------------------------
+
+    def _require_admin(self):
+        """Reject mutating requests that lack a matching X-Admin-Token header.
+
+        Uses hmac.compare_digest for constant-time comparison to prevent timing
+        attacks. Returns True when the token matches (caller proceeds); sends
+        a JSON error and returns False otherwise.
+
+        If ADMIN_TOKEN is unset (env var not configured) the server is in
+        "not configured" state and rejects all mutating requests with 503.
+        """
+        if not ADMIN_TOKEN:
+            self._send_json(503, {"error": "Admin token not configured on server."})
+            return False
+        token = self.headers.get(ADMIN_TOKEN_HEADER, "")
+        if not hmac.compare_digest(token, ADMIN_TOKEN):
+            self._send_json(401, {"error": "Unauthorized."})
+            return False
+        return True
 
     # ---- POST /api/run-matcher ---------------------------------------------
 

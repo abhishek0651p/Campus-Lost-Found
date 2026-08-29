@@ -39,6 +39,22 @@
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
+  // ---- Auth ----------------------------------------------------------------
+  // The admin token is read from localStorage and sent on every mutating
+  // /api/* request as X-Admin-Token. The token is never hard-coded here —
+  // it must be set by the developer before use, e.g. via the browser
+  // devtools: localStorage.setItem('campusLF_admin_token', '<your token>').
+  // If unset, adminHeaders() omits the header and the server responds 401.
+  const ADMIN_TOKEN = (() => {
+    try { return localStorage.getItem('campusLF_admin_token') || ''; }
+    catch (e) { return ''; }
+  })();
+  function adminHeaders() {
+    const h = { 'Content-Type': 'application/json' };
+    if (ADMIN_TOKEN) h['X-Admin-Token'] = ADMIN_TOKEN;
+    return h;
+  }
+
   // ---- Bootstrap -----------------------------------------------------------
   document.addEventListener('DOMContentLoaded', async () => {
     await loadData();
@@ -1381,7 +1397,7 @@
     try {
       const res = await fetch('/api/add-item', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: adminHeaders(),
         body: JSON.stringify(payload)
       });
 
@@ -1457,7 +1473,7 @@
     try {
       const res = await fetch('/api/delete-item', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: adminHeaders(),
         body: JSON.stringify({ id: itemId })
       });
 
@@ -2067,7 +2083,7 @@
     try {
       const res = await fetch('/api/update-match', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: adminHeaders(),
         body: JSON.stringify({ match_id: matchId, status: newStatus })
       });
 
@@ -2187,7 +2203,7 @@
       try {
         const res = await fetch('/api/run-matcher', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
+          headers: adminHeaders()
         });
 
         const data = await res.json();
