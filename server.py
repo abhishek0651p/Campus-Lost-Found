@@ -175,6 +175,15 @@ class CampusHandler(http.server.SimpleHTTPRequestHandler):
             self._send_json(400, {"error": "type must be 'lost' or 'found'"})
             return
 
+        # Validate email format. Intentionally not full RFC 5322 — a
+        # practical [local]@[domain].[tld] check is enough for a campus
+        # app and rejects whitespace-padding, missing @, missing dot, and
+        # embedded control characters.
+        email = payload.get("email", "").strip()
+        if not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]{2,}", email):
+            self._send_json(400, {"error": "Invalid email address."})
+            return
+
         # Read current items.json
         try:
             with open(ITEMS_JSON, "r", encoding="utf-8") as f:
@@ -214,7 +223,7 @@ class CampusHandler(http.server.SimpleHTTPRequestHandler):
             "date": payload.get("date", time.strftime("%Y-%m-%d")),
             "time": payload.get("time", time.strftime("%H:%M")),
             "reporter": payload["reporter"].strip(),
-            "email": payload["email"].strip(),
+            "email": email,
             "status": "open",
             "color": payload.get("color", "").strip(),
             "brand": payload.get("brand", "").strip(),
