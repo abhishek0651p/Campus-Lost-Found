@@ -113,13 +113,47 @@ double Matcher::scoreLocation(const Item& lost, const Item& found) const {
 }
 
 double Matcher::scoreDate(const Item& lost, const Item& found) const {
-    // Simple day-difference heuristic (parse YYYY-MM-DD)
+    // Strict YYYY-MM-DD parser using proleptic Gregorian ordinal days.
     auto parseDays = [](const std::string& d) -> int {
-        if (d.size() < 10) return -1;
-        int y = std::stoi(d.substr(0, 4));
-        int m = std::stoi(d.substr(5, 2));
-        int day = std::stoi(d.substr(8, 2));
-        return y * 365 + m * 30 + day;  // rough approximation
+        if (d.size() != 10) return -1;
+
+        for (size_t i = 0; i < d.size(); ++i) {
+            if (i == 4 || i == 7) {
+                if (d[i] != '-') return -1;
+            } else if (!std::isdigit(static_cast<unsigned char>(d[i]))) {
+                return -1;
+            }
+        }
+
+        int y = (d[0] - '0') * 1000 + (d[1] - '0') * 100
+              + (d[2] - '0') * 10   + (d[3] - '0');
+        int m = (d[5] - '0') * 10 + (d[6] - '0');
+        int day = (d[8] - '0') * 10 + (d[9] - '0');
+
+        if (y < 1 || m < 1 || m > 12) return -1;
+
+        auto isLeapYear = [](int year) -> bool {
+            return (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0);
+        };
+        const int daysInMonth[] = {
+            31, 28, 31, 30, 31, 30,
+            31, 31, 30, 31, 30, 31
+        };
+
+        int maxDay = daysInMonth[m - 1];
+        if (m == 2 && isLeapYear(y)) maxDay = 29;
+        if (day < 1 || day > maxDay) return -1;
+
+        int a = (14 - m) / 12;
+        int adjustedYear = y + 4800 - a;
+        int adjustedMonth = m + 12 * a - 3;
+
+        return day + (153 * adjustedMonth + 2) / 5
+             + 365 * adjustedYear
+             + adjustedYear / 4
+             - adjustedYear / 100
+             + adjustedYear / 400
+             - 32045;
     };
 
     int ld = parseDays(lost.date);
@@ -459,4 +493,3 @@ bool Matcher::saveResults(const std::string& outputPath,
 }
 
 } // namespace campus_lf
-
