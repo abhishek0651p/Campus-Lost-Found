@@ -235,6 +235,34 @@ class CampusHandler(http.server.SimpleHTTPRequestHandler):
             self._send_json(400, {"error": "Invalid email address."})
             return
 
+        # Validate field lengths
+        field_limits = {
+            "title": 200,
+            "description": 2000,
+            "reporter": 100,
+            "location": 500,
+            "category": 100,
+            "color": 50,
+            "brand": 100,
+        }
+        for field, limit in field_limits.items():
+            value = payload.get(field, "")
+            if isinstance(value, str) and len(value) > limit:
+                self._send_json(400, {
+                    "error": f"'{field}' exceeds maximum length of {limit} characters."
+                })
+                return
+
+        # Tags: cap count and each tag length
+        tags_raw = payload.get("tags", "")
+        if isinstance(tags_raw, str):
+            tags = [t.strip() for t in tags_raw.split(",") if t.strip()]
+        elif isinstance(tags_raw, list):
+            tags = tags_raw
+        else:
+            tags = []
+        tags = [t[:50] for t in tags if t][:10]  # max 10 tags, 50 chars each
+
         # Read current items.json
         try:
             with open(ITEMS_JSON, "r", encoding="utf-8") as f:
@@ -257,14 +285,6 @@ class CampusHandler(http.server.SimpleHTTPRequestHandler):
         new_id = f"{prefix}{str(max_num + 1).zfill(3)}"
 
         # Build the new item
-        tags_raw = payload.get("tags", "")
-        if isinstance(tags_raw, str):
-            tags = [t.strip() for t in tags_raw.split(",") if t.strip()]
-        elif isinstance(tags_raw, list):
-            tags = tags_raw
-        else:
-            tags = []
-
         new_item = {
             "id": new_id,
             "title": payload["title"].strip(),
