@@ -43,6 +43,12 @@ MATCHER_EXE = PROJECT_ROOT / "backend" / "campus_matcher.exe"
 ADMIN_TOKEN = os.environ.get("CAMPUS_LF_ADMIN_TOKEN", "")
 ADMIN_TOKEN_HEADER = "X-Admin-Token"
 
+# CORS allowlist: only the loopback origins that this dev server can be
+# reached at. The server binds to all interfaces but the legitimate
+# frontend always runs on localhost, so we narrow CORS to those origins
+# and refuse any other Origin header.
+ALLOWED_ORIGINS = {f"http://localhost:{PORT}", f"http://127.0.0.1:{PORT}"}
+
 # ---------------------------------------------------------------------------
 # Request Handler
 # ---------------------------------------------------------------------------
@@ -75,12 +81,24 @@ class CampusHandler(http.server.SimpleHTTPRequestHandler):
     # ---- CORS (for local dev if needed) ------------------------------------
 
     def end_headers(self):
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Admin-Token")
+        # Reflect the request Origin only if it is on the allowlist. Never
+        # echo the Origin header unconditionally — that would be equivalent
+        # to Access-Control-Allow-Origin: * with a wider surface.
+        origin = self.headers.get("Origin", "")
+        if origin in ALLOWED_ORIGINS:
+            self.send_header("Access-Control-Allow-Origin", origin)
+            self.send_header("Vary", "Origin")
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Admin-Token")
         super().end_headers()
 
     def do_OPTIONS(self):
+        # Only /api/* paths handle CORS preflight. Other paths return 404
+        # so the OPTIONS method cannot be used to probe static-file routes.
+        if not self.path.startswith("/api/"):
+            self.send_response(404)
+            self.end_headers()
+            return
         self.send_response(204)
         self.end_headers()
 
