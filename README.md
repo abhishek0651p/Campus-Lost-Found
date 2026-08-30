@@ -62,6 +62,47 @@ cl /EHsc /std:c++17 main.cpp matcher.cpp /Fe:campus_matcher.exe
 
 ---
 
+## 🔐 Admin Token Setup
+
+Mutating API endpoints (`/api/add-item`, `/api/delete-item`, `/api/update-match`, `/api/run-matcher`) require an admin token. The server reads it from the `CAMPUS_LF_ADMIN_TOKEN` environment variable — **never store it in source or commit it to git**. If the env var is unset, mutating routes fail-closed with HTTP 503.
+
+### 1. Generate a token
+
+Use any high-entropy random string. Examples:
+
+```powershell
+# PowerShell (built-in)
+[guid]::NewGuid().ToString() + "-" + [guid]::NewGuid().ToString()
+```
+
+Pick something long and unpredictable. Do not reuse a password.
+
+### 2. Set it in PowerShell before starting the server
+
+```powershell
+# In the same terminal where you will run server.py
+$env:CAMPUS_LF_ADMIN_TOKEN = "your-token-here"
+python server.py 8080
+```
+
+To verify it took effect, open the dashboard and try to add an item. A correctly-set token returns 201; a missing or wrong token returns 401 (or 503 if the env var was unset).
+
+> **Tip:** To clear the env var in the same session: `Remove-Item Env:\CAMPUS_LF_ADMIN_TOKEN`
+
+### 3. Configure the frontend to send the token
+
+The frontend reads the token from `localStorage` and sends it on every mutating `/api/*` request as the `X-Admin-Token` header. Set it via the browser devtools console before performing any mutating action:
+
+```javascript
+localStorage.setItem('campusLF_admin_token', 'your-token-here');
+```
+
+Reload the page once after setting it. The token is then attached automatically to `/api/add-item`, `/api/delete-item`, `/api/update-match`, and `/api/run-matcher` requests.
+
+> **Note:** The token lives only in your browser's localStorage. Clear it with `localStorage.removeItem('campusLF_admin_token')` if you need to.
+
+---
+
 ## ⚙️ How Smart Matching Works
 
 The C++ engine uses a **weighted multi-criteria scoring algorithm** that compares every lost item against every found item:
