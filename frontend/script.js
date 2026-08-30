@@ -855,19 +855,40 @@
   function buildActivityFeed(limit) {
     const events = [];
 
+    // Helper: parse item date+time into ISO string, or null if invalid
+    function _itemIso(date, time) {
+      if (!date) return null;
+      try {
+        const d = date + 'T' + (time || '00:00:00');
+        const parsed = new Date(d);
+        return isNaN(parsed.getTime()) ? null : parsed.toISOString();
+      } catch { return null; }
+    }
+
+    // Helper: parse match created_at into ISO string, or null if invalid
+    function _matchIso(created_at) {
+      if (!created_at) return null;
+      try {
+        const parsed = new Date(created_at);
+        return isNaN(parsed.getTime()) ? null : parsed.toISOString();
+      } catch { return null; }
+    }
+
     appData.lost_items.forEach(i => {
       events.push({
         type: 'lost',
-        text: `<strong>${i.reporter}</strong> reported "<strong>${i.title}</strong>" as lost near ${i.location}`,
-        time: formatRelativeDate(i.date, i.time)
+        text: `<strong>${escHTML(i.reporter)}</strong> reported "<strong>${escHTML(i.title)}</strong>" as lost near ${escHTML(i.location)}`,
+        time: formatRelativeDate(i.date, i.time),
+        _iso: _itemIso(i.date, i.time)
       });
     });
 
     appData.found_items.forEach(i => {
       events.push({
         type: 'found',
-        text: `<strong>${i.reporter}</strong> found "<strong>${i.title}</strong>" at ${i.location}`,
-        time: formatRelativeDate(i.date, i.time)
+        text: `<strong>${escHTML(i.reporter)}</strong> found "<strong>${escHTML(i.title)}</strong>" at ${escHTML(i.location)}`,
+        time: formatRelativeDate(i.date, i.time),
+        _iso: _itemIso(i.date, i.time)
       });
     });
 
@@ -877,14 +898,20 @@
       if (lost && found) {
         events.push({
           type: 'match',
-          text: `Smart Match: "<strong>${lost.title}</strong>" ↔ "<strong>${found.title}</strong>" (${m.score}% confidence)`,
-          time: formatRelativeDate(m.created_at.split('T')[0], m.created_at.split('T')[1])
+          text: `Smart Match: "<strong>${escHTML(lost.title)}</strong>" ↔ "<strong>${escHTML(found.title)}</strong>" (${m.score}% confidence)`,
+          time: formatRelativeDate(m.created_at ? m.created_at.split('T')[0] : null, m.created_at ? m.created_at.split('T')[1] : null),
+          _iso: _matchIso(m.created_at)
         });
       }
     });
 
-    // Sort by time string (approximate newest first)
-    events.sort((a, b) => b.time.localeCompare(a.time));
+    // Sort chronologically newest first; events with no valid timestamp go to the end
+    events.sort((a, b) => {
+      if (a._iso === null && b._iso === null) return 0;
+      if (a._iso === null) return 1;
+      if (b._iso === null) return -1;
+      return b._iso.localeCompare(a._iso);
+    });
 
     return events.slice(0, limit).map(e => `
       <div class="activity-item">
