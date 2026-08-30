@@ -1409,8 +1409,8 @@
     // (mirror of the server-side check in server.py _handle_add_item).
     if (payload.imageUrl) {
       const scheme = String(payload.imageUrl).split(':')[0].toLowerCase();
-      if (scheme === 'javascript' || scheme === 'data') {
-        showToast('Invalid image URL: javascript: and data: URIs are not permitted.', 'error');
+      if (scheme === 'javascript' || scheme === 'data' || scheme === 'vbscript') {
+        showToast('Invalid image URL: javascript:, data:, and vbscript: URIs are not permitted.', 'error');
         return;
       }
     }

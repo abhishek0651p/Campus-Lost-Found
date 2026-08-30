@@ -290,12 +290,14 @@ class CampusHandler(http.server.SimpleHTTPRequestHandler):
 
         image_url = payload.get("imageUrl", "").strip()
         if image_url:
-            # Reject javascript: and data: schemes — they bypass HTML-escaping
-            # in <img src> and enable stored XSS. Check is case-insensitive.
+            # Reject javascript:, data:, and vbscript: schemes — they bypass
+            # HTML-escaping in <img src> and enable stored XSS. Check is
+            # case-insensitive. Mirrors the client-side check in script.js.
             lowered = image_url.lower()
-            if lowered.startswith("javascript:") or lowered.startswith("data:"):
+            if (lowered.startswith("javascript:") or lowered.startswith("data:")
+                    or lowered.startswith("vbscript:")):
                 self._send_json(400, {
-                    "error": "Invalid imageUrl: javascript: and data: schemes are not permitted."
+                    "error": "Invalid imageUrl: javascript:, data:, and vbscript: schemes are not permitted."
                 })
                 return
             new_item["imageUrl"] = image_url
