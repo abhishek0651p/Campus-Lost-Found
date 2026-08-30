@@ -24,6 +24,18 @@ Campus-Lost-Found/
 └── README.md               # This file
 ```
 
+## 📋 Before You Start
+
+**Prerequisites:**
+
+- **Python 3.7 or higher** — required to run the dev server (`server.py`)
+- **g++ (MinGW) or MSVC** — *only* needed if you want to recompile the C++ matching engine from source. The provided `campus_matcher.exe` is not committed (it is gitignored), so a fresh clone will require you to either build it yourself or rely on the embedded sample data in the frontend for the initial demo.
+- **Git** — to clone the repository
+
+**Important:** the token you set in PowerShell (server side) and the token you set in browser `localStorage` (frontend side) **must be the same value** — they are compared verbatim by the server.
+
+---
+
 ## 🚀 How to Run
 
 ### Frontend (runs immediately — no build step)
@@ -59,6 +71,33 @@ cd backend
 cl /EHsc /std:c++17 main.cpp matcher.cpp /Fe:campus_matcher.exe
 .\campus_matcher.exe ..\data\items.json
 ```
+
+---
+
+## 🔐 Quick Start
+
+```powershell
+# 1. Clone the repository
+git clone https://github.com/abhishek0651p/Campus-Lost-Found.git
+cd Campus-Lost-Found
+
+# 2. Generate a random token
+$token = [guid]::NewGuid().ToString() + "-" + [guid]::NewGuid().ToString()
+
+# 3. Start the server from the project root (not the frontend folder)
+$env:CAMPUS_LF_ADMIN_TOKEN = $token
+python server.py 8080
+```
+
+Then open **http://localhost:8080/frontend/index.html** in your browser.
+
+To enable add/delete/matcher features, open DevTools (`F12`) → **Console** tab, then paste:
+
+```javascript
+localStorage.setItem('campusLF_admin_token', 'PASTE_YOUR_TOKEN_HERE')
+```
+
+Replace `PASTE_YOUR_TOKEN_HERE` with the exact same token value from step 2. Reload the page — the token is now attached to every mutating API request.
 
 ---
 
