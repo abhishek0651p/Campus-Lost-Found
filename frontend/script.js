@@ -40,18 +40,17 @@
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
   // ---- Auth ----------------------------------------------------------------
-  // The admin token is read from localStorage and sent on every mutating
-  // /api/* request as X-Admin-Token. The token is never hard-coded here —
-  // it must be set by the developer before use, e.g. via the browser
-  // devtools: localStorage.setItem('campusLF_admin_token', '<your token>').
+  // The admin token is read from localStorage on every request and sent as
+  // X-Admin-Token. Reading it fresh each time (not a captured constant)
+  // means the token is picked up even if set via DevTools after page load.
+  // The token is never hard-coded here — it must be set by the developer
+  // before use, e.g. via the browser devtools:
+  //   localStorage.setItem('campusLF_admin_token', '<your token>').
   // If unset, adminHeaders() omits the header and the server responds 401.
-  const ADMIN_TOKEN = (() => {
-    try { return localStorage.getItem('campusLF_admin_token') || ''; }
-    catch (e) { return ''; }
-  })();
   function adminHeaders() {
     const h = { 'Content-Type': 'application/json' };
-    if (ADMIN_TOKEN) h['X-Admin-Token'] = ADMIN_TOKEN;
+    const token = localStorage.getItem('campusLF_admin_token') || '';
+    if (token) h['X-Admin-Token'] = token;
     return h;
   }
 
